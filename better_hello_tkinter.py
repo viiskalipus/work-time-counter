@@ -38,11 +38,33 @@ class HelloView(tk.Frame):
         # that column and other columns to their minimum widths. 
         self.columnconfigure(1, weight=1)
         
-        def on_change(self):
-            # strip() strips out the whitespace in the variable. 
-            if self.name.get().strip():
-                self.hello_string.set(f"Hello {self.name.get()}!")
-            else:
-                self.hello_string.set("Hello World")
+    def on_change(self):
+        # strip() strips out the whitespace in the variable. 
+        if self.name.get().strip():
+            self.hello_string.set(f"Hello {self.name.get()}!")
+        else:
+            self.hello_string.set("Hello World")
                 
-            
+# More than one subclass Tk may cause issues if wanting multiple 
+# MyApplication objects. 
+class MyApplication(tk.Tk): 
+    """Hello World Main Application"""
+    def __init__(self, *args, **kwargs):
+        # Tk object is the root window and does not need 'parent' as argument.
+        super().__init__(*args, **kwargs)
+        # Window title
+        self.title("Hello Tkinter")
+        # Sets the size of the window in pixels
+        self.geometry("800x600")
+        # Sets resizability of the window
+        self.resizable(width=False, height=False)
+        
+        HelloView(self).grid(sticky=(tk.E + tk.W + tk.N + tk.S))
+        self.columnconfigure(0, weight=1)
+        
+# Checking if script is being run directly. 
+# It's good to place this check into main execution 
+# code to safely reuse classes and functions. 
+if __name__ == '__main__':
+    app = MyApplication()
+    app.mainloop()
