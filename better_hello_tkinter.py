@@ -33,3 +33,16 @@ class HelloView(tk.Frame):
         ch_button.grid(row=0, column=2, sticky=tk.E)
         hello_label.grid(row=1, column=0, columnspan=3)
         
+        # Columncofigure tells that the column 1 (0, 1, 2,... etc.)
+        # has more weight than others so it will expand horizontally
+        # that column and other columns to their minimum widths. 
+        self.columnconfigure(1, weight=1)
+        
+        def on_change(self):
+            # strip() strips out the whitespace in the variable. 
+            if self.name.get().strip():
+                self.hello_string.set(f"Hello {self.name.get()}!")
+            else:
+                self.hello_string.set("Hello World")
+                
+            
