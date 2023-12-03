@@ -3,7 +3,7 @@ from tkinter.ttk import *
 
 # Only one of this object should be for every application
 # This is the main exe thread
-root = tk.Tk()
+root = Tk()
 
 # Label() is passed to the master widget (root)
 # Text to be displayed on the Label() widget
