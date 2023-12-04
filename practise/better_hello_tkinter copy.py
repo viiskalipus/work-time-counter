@@ -26,37 +26,24 @@ class WorkTime(tk.Frame):
         save_label = ttk.Label(self, textvariable=self.profile_string, 
                                 font=("Consolas", 12), wraplength=600)
         
-        self.time_elapsed = tk.StringVar()
-        self.time_elapsed.set("Current time is " + 
-                                datetime.datetime.now().strftime("%H:%M:%S"))
-        time_counter_label = ttk.Label(self, textvariable=self.time_elapsed, 
-                                font=("Consolas", 18), background="red")
-        counter_start_button = ttk.Button(self, text="Start", command=self.start_time)
-        counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
-        self.task_name = tk.StringVar()
-        self.task_name.set()
-        task_label = ttk.Label(self, text="Task: ")
+        self.time_elapsed = datetime.date
+        self.time_counter_label = ttk.Label(self, textvariable=self.time_elapsed)
         
-        log_box = ttk.Notebook(self, height=100, width=100)
         
         # Grid is a geometry manager, it allows to position widgets
         # on their parent object by rows and columns. Sticky argument 
         # takes cardinal direction N, S, E or W (tk.W or "W"). 
-        profile_label.grid(row=0, column=0, sticky="W")
-        name_entry.grid(row=0, column=1, sticky="WE")
-        profile_ok_button.grid(row=0, column=2, sticky="E")
+        profile_label.grid(row=0, column=0, sticky=tk.W)
+        name_entry.grid(row=0, column=1, sticky=(tk.W + tk.E))
+        profile_ok_button.grid(row=0, column=2, sticky=tk.E)
         save_label.grid(row=1, column=0, columnspan=3)
-        time_counter_label.grid(row=2, column=0, columnspan=2, rowspan=1, sticky="WSN")
-        log_box.grid(row=5, column=0, columnspan=3, rowspan=1, sticky="WES")
-        counter_start_button.grid(row=2, column=2, sticky="E")
-        counter_pause_button.grid(row=3, column=2, sticky="E")
-        task_label.grid(row=4, column=0, sticky="W")
+        time_counter_label.grid
+        
         
         # Columncofigure tells that the column 1 (0, 1, 2,... etc.)
         # has more weight than others so it will expand horizontally
         # that column and other columns to their minimum widths. 
         self.columnconfigure(1, weight=1)
-        self.rowconfigure(1, weight=1)
         
     def profile_on_change(self):
         # strip() strips out the whitespace in the variable. 
@@ -65,13 +52,6 @@ class WorkTime(tk.Frame):
         else:
             self.profile_string.set("Saved for name \"no_name\"")
                 
-    def start_time(self):
-        pass
-    
-    def pause_time(self):
-        pass
-    
-    
 # More than one subclass Tk may cause issues if wanting multiple 
 # MyApplication objects. 
 class WorkTimeApplication(tk.Tk): 

@@ -4,19 +4,20 @@ Main application for work time counter
 '''
 import tkinter as tk
 from tkinter import ttk
+import datetime
 
 
 class WorkTime(tk.Frame): 
     ''' The application screen and widgets '''
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        
 
-        profile_name = tk.StringVar()
-        profile_label = ttk.Label(self, text="Profile: ")
+        self.profile_name = tk.StringVar()
+        self.profile_name.set("Peppo")
+        self.profile_label = ttk.Label(self, text="Profile: ")
         
         # Profile entry widget with profile_name
-        profile_entry = ttk.Entry(parent, textvariable=profile_name)
+        profile_entry = ttk.Entry(self, textvariable=profile_name)
         profile_ok_button = ttk.Button(self, text="OK", command=self.on_change)
         profile_name_label = ttk.Label(self, textvariable=profile_name, 
                                 font=("Consolas", 24), wraplength=600)
@@ -26,6 +27,9 @@ class WorkTime(tk.Frame):
         profile_ok_button.grid(row=0, column=3)
         profile_name_label.grid(row=1, column=0, columnspan=3)
         
+        start_button = ttk.Button(self, text="Start", command=self.on_start)
+        time_counter = ttk.Label(self, text="")
+        
         self.columnconfigure(1, weight=1)
 
     def on_change(self): 
@@ -34,6 +38,9 @@ class WorkTime(tk.Frame):
         else:
             # If no name is given, set empty
             self.profile_name.set("")
+            
+#    def on_start(self):
+#        time_counter.config(text = datetime.time)
 
 class WorkTimeApplication(tk.Tk): 
     """Work Time Counter Main Application"""
