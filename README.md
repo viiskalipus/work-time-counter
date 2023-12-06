@@ -32,3 +32,6 @@ day and user set name, like a work profile (if possible).
 | Work task |	String	| Current work task |
 | Timer running |	Boolean |	Is timer running? |
 
+## Improvements for future
+- Keyboard commands
+- 

@@ -1,73 +1,71 @@
 """   
-A better Hello World for Tkinter
+Work Time Counter for keeping track on working time. 
 """
-# Avoid "star imports"
 import tkinter as tk 
 from tkinter import ttk
 import datetime
+import tkinter.scrolledtext as scrolledtext
 
-# Frame widget is typically used as a container for other widgets
-# Any number inside Frame class, all widgets inside is treated 
-# like a single widget
+# WorkTime Frame
 class WorkTime(tk.Frame):
     """Work Time counter main screen"""
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        # StringVar is part of a collection of variable types in Tkinter
-        # that have special functionality, like automatic propagation of
-        # changes to widgets or event triggers. 
+        
+        # Set savename
         self.profile = tk.StringVar()
-        self.profile.set("anonymous")
+        self.profile.set("")
         self.profile_string = tk.StringVar()
         self.profile_string.set("Give savefile name")
         profile_label = ttk.Label(self, text="Profile: ")
         name_entry = ttk.Entry(self, textvariable=self.profile)
-        
         profile_ok_button = ttk.Button(self, text="OK", command=self.profile_on_change)
         save_label = ttk.Label(self, textvariable=self.profile_string, 
                                 font=("Consolas", 12), wraplength=600)
         
+        # Running time
         self.time_elapsed = tk.StringVar()
         self.time_elapsed.set("Current time is " + 
                                 datetime.datetime.now().strftime("%H:%M:%S"))
-        
+        time_counter_label = ttk.Label(self, textvariable=self.time_elapsed, 
+                                font=("Consolas", 18), background="red")
+        # Current time
         self.current_time = tk.StringVar()
         self.current_time.set("Current time is " + 
                                 datetime.datetime.now().strftime("%H:%M:%S"))
-        time_counter_label = ttk.Label(self, textvariable=self.time_elapsed, 
-                                font=("Consolas", 18), background="red")
         current_time_label = ttk.Label(self, textvariable=self.current_time, 
                                 font=("Consolas", 18), background="green")
         
         counter_start_button = ttk.Button(self, text="Start", command=self.start_time)
         counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
+        
+        # Set task
         self.task_name = tk.StringVar()
-        self.task_name.set("Enter task name")
+        self.task_name.set("")
         task_label = ttk.Label(self, text="Task: ")
         task_entry = ttk.Entry(self, textvariable=self.task_name)
         task_ok_button = ttk.Button(self, text="OK", command=self.task_on_change)
         
-        log_box = ttk.Notebook(self, height=100, width=100)
+        # Log
+        log_screen = scrolledtext.ScrolledText(self, height=8, width=100)
+        log_label = ttk.Label(self, text="Log: ")
         
-        # Grid is a geometry manager, it allows to position widgets
-        # on their parent object by rows and columns. Sticky argument 
-        # takes cardinal direction N, S, E or W (tk.W or "W"). 
+        # Grid positions
         profile_label.grid(row=0, column=0, sticky="W")
         name_entry.grid(row=0, column=1, sticky="WE")
         profile_ok_button.grid(row=0, column=2, sticky="E")
         save_label.grid(row=1, column=0, columnspan=3)
         time_counter_label.grid(row=2, column=0, columnspan=2, rowspan=1, sticky="WSN")
         current_time_label.grid(row=3, column=0, columnspan=2, rowspan=1, sticky="WSN")
-        log_box.grid(row=5, column=0, columnspan=3, rowspan=1, sticky="WES")
         counter_start_button.grid(row=2, column=2, sticky="E")
         counter_pause_button.grid(row=3, column=2, sticky="E")
         task_label.grid(row=4, column=0, sticky="W")
         task_entry.grid(row=4, column=1, sticky="WE")
         task_ok_button.grid(row=4, column=2, sticky="E")
+        log_screen.grid(row=6, column=1, sticky="ES")
+        log_label.grid(row=5, column=0, sticky="W")
         
-        # Columncofigure tells that the column 1 (0, 1, 2,... etc.)
-        # has more weight than others so it will expand horizontally
-        # that column and other columns to their minimum widths. 
+        # Column/row configurations
         self.columnconfigure(1, weight=1)
         self.rowconfigure(1, weight=1)
         
@@ -81,15 +79,33 @@ class WorkTime(tk.Frame):
                 
     # When time counter is started
     def start_time(self):
-        pass
+        WorkTime.log_screen.insert('1.0', "Started")
+        # Update log "Task {task_name} started at {current_time} for "
+        # If pause True and start False, start the timer
+            # 
     
     # When time counter is paused
     def pause_time(self):
         pass
+        # If pause False but start True, pause the timer
+            # Change button text to 'Reset'
+        # If pause True and start False, reset the timer
+            # Change button to 'Pause'
     
     # When current task is changed
     def task_on_change(self):
         pass
+        # Update log f"Task changed to {task_name} at [HH:MM:SS]"
+    
+    # Update changes to log
+    def update_log(self):
+        pass
+    
+    # Write log into a file
+    def write_file(self):
+        pass
+        # When log updated, add to file
+        # If application to be closed, stop timer and save to file before
     
 class WorkTimeApplication(tk.Tk): 
     """Work Time Counter Main Application"""
@@ -108,5 +124,5 @@ class WorkTimeApplication(tk.Tk):
         
 # Checking if script is being run directly. 
 if __name__ == '__main__':
-    app = WorkTimeApplication()
+    app = WorkTimeApplication() 
     app.mainloop()
