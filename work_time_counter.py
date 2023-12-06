@@ -19,7 +19,6 @@ class WorkTime(tk.Frame):
         self.profile_string.set("Give savefile name")
         profile_label = ttk.Label(self, text="Profile: ")
         name_entry = ttk.Entry(self, textvariable=self.profile)
-        profile_ok_button = ttk.Button(self, text="OK", command=self.profile_on_change)
         save_label = ttk.Label(self, textvariable=self.profile_string, 
                                 font=("Consolas", 12), wraplength=600)
         
@@ -32,23 +31,26 @@ class WorkTime(tk.Frame):
         # Current time
         self.current_time = tk.StringVar()
         self.current_time.set("Current time is " + 
-                                datetime.datetime.now().strftime("%H:%M:%S"))
+                                datetime.datetime.now().strftime("%H:%M"))
         current_time_label = ttk.Label(self, textvariable=self.current_time, 
                                 font=("Consolas", 18), background="green")
-        
-        counter_start_button = ttk.Button(self, text="Start", command=self.start_time)
-        counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
-        
+               
         # Set task
         self.task_name = tk.StringVar()
         self.task_name.set("")
         task_label = ttk.Label(self, text="Task: ")
         task_entry = ttk.Entry(self, textvariable=self.task_name)
-        task_ok_button = ttk.Button(self, text="OK", command=self.task_on_change)
+
         
         # Log
         log_screen = scrolledtext.ScrolledText(self, height=8, width=100)
         log_label = ttk.Label(self, text="Log: ")
+        
+        # Buttons
+        profile_ok_button = ttk.Button(self, text="OK", command=self.profile_on_change)
+        counter_start_button = ttk.Button(self, text="Start", command=self.start_time)
+        counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
+        task_ok_button = ttk.Button(self, text="OK", command=self.task_on_change)
         
         # Grid positions
         profile_label.grid(row=0, column=0, sticky="W")
@@ -73,13 +75,13 @@ class WorkTime(tk.Frame):
     def profile_on_change(self):
         # strip() strips out the whitespace in the variable. 
         if self.profile.get().strip():
-            self.profile_string.set(f"Saved for name \"{self.profile.get()}\"")
+            self.profile_string.set(f"Saved to file \"{self.profile.get()}\"")
         else:
-            self.profile_string.set("Saved for name \"no_name\"")
+            self.profile_string.set("Saved to file \"no_name\"")
                 
     # When time counter is started
-    def start_time(self):
-        WorkTime.log_screen.insert('1.0', "Started")
+    def start_time(destination):
+        destination.insert('end', 'Started')
         # Update log "Task {task_name} started at {current_time} for "
         # If pause True and start False, start the timer
             # 
@@ -107,6 +109,8 @@ class WorkTime(tk.Frame):
         # When log updated, add to file
         # If application to be closed, stop timer and save to file before
     
+
+
 class WorkTimeApplication(tk.Tk): 
     """Work Time Counter Main Application"""
     def __init__(self, *args, **kwargs):
