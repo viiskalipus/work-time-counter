@@ -4,7 +4,9 @@ Work Time Counter for keeping track on working time.
 import tkinter as tk 
 from tkinter import ttk
 import datetime
+import time
 import tkinter.scrolledtext as scrolledtext
+from functools import partial
 
 # WorkTime Frame
 class WorkTime(tk.Frame):
@@ -24,14 +26,15 @@ class WorkTime(tk.Frame):
         
         # Running time
         self.time_elapsed = tk.StringVar()
-        self.time_elapsed.set("Current time is " + 
-                                datetime.datetime.now().strftime("%H:%M:%S"))
+        self.time_elapsed.set("Elapsed time: " + 
+                                datetime.datetime.now().strftime("%H:%M"))
         time_counter_label = ttk.Label(self, textvariable=self.time_elapsed, 
                                 font=("Consolas", 18), background="red")
+        
         # Current time
         self.current_time = tk.StringVar()
-        self.current_time.set("Current time is " + 
-                                datetime.datetime.now().strftime("%H:%M"))
+        self.current_time.set("Current time: " + 
+                                datetime.datetime.now().strftime("%H:%M:%S"))
         current_time_label = ttk.Label(self, textvariable=self.current_time, 
                                 font=("Consolas", 18), background="green")
                
@@ -40,7 +43,6 @@ class WorkTime(tk.Frame):
         self.task_name.set("")
         task_label = ttk.Label(self, text="Task: ")
         task_entry = ttk.Entry(self, textvariable=self.task_name)
-
         
         # Log
         log_screen = scrolledtext.ScrolledText(self, height=8, width=100)
@@ -48,7 +50,7 @@ class WorkTime(tk.Frame):
         
         # Buttons
         profile_ok_button = ttk.Button(self, text="OK", command=self.profile_on_change)
-        counter_start_button = ttk.Button(self, text="Start", command=self.start_time)
+        counter_start_button = ttk.Button(self, text="Start", command=partial(start_time, log_screen, self.current_time.get()))
         counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
         task_ok_button = ttk.Button(self, text="OK", command=self.task_on_change)
         
@@ -71,24 +73,30 @@ class WorkTime(tk.Frame):
         self.columnconfigure(1, weight=1)
         self.rowconfigure(1, weight=1)
         
+        # Sync with computer clock
+        snooze = (1000000 - datetime.datetime.now().microsecond) / 1000000.
+        if snooze > 0:
+            time.sleep(snooze)
+        self.clock()
+        
+    def clock(self): 
+        self.current_time.set("Current time: " + 
+                                datetime.datetime.now().strftime("%H:%M:%S"))
+        self.after(1000, self.clock)
+        
     # When savefile profile is changed
     def profile_on_change(self):
         # strip() strips out the whitespace in the variable. 
         if self.profile.get().strip():
-            self.profile_string.set(f"Saved to file \"{self.profile.get()}\"")
+            self.profile_string.set(f"Saved to file \"{self.profile.get()}.txt\"")
         else:
-            self.profile_string.set("Saved to file \"no_name\"")
-                
-    # When time counter is started
-    def start_time(destination):
-        destination.insert('end', 'Started')
-        # Update log "Task {task_name} started at {current_time} for "
-        # If pause True and start False, start the timer
-            # 
-    
+            self.profile_string.set("Saved to file \"no_name.txt\"")
+
     # When time counter is paused
     def pause_time(self):
         pass
+    
+        # TODO
         # If pause False but start True, pause the timer
             # Change button text to 'Reset'
         # If pause True and start False, reset the timer
@@ -107,9 +115,17 @@ class WorkTime(tk.Frame):
     def write_file(self):
         pass
         # When log updated, add to file
+        
+        # TODO
         # If application to be closed, stop timer and save to file before
-    
 
+# When time counter is started
+def start_time(destination, time):
+    destination.insert('end', f'Counter started at [{time}]\n')
+    # Update log "Task {task_name} started at {current_time} for "
+    
+    # TODO
+    # If pause True and start False, start the timer
 
 class WorkTimeApplication(tk.Tk): 
     """Work Time Counter Main Application"""
