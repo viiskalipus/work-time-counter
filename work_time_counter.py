@@ -8,6 +8,8 @@ import time
 import tkinter.scrolledtext as scrolledtext
 from functools import partial
 
+
+
 # WorkTime Frame
 class WorkTime(tk.Frame):
     """Work Time counter main screen"""
@@ -53,14 +55,14 @@ class WorkTime(tk.Frame):
                                           command=partial(start_time, 
                                                           log_screen, 
                                                           self.task_name, 
-                                                          self.current_time.get(),
+                                                          self.current_time,
                                                           self.time_elapsed))
         counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
         task_ok_button = ttk.Button(self, text="OK", 
                                     command=partial(task_on_change,
                                                     log_screen,
                                                     self.task_name,
-                                                    self.current_time.get()))
+                                                    self.current_time))
         save_button = ttk.Button(self, text="Save", command=partial(save_to_file, 
                                                                     self.profile,
                                                                     log_screen))
@@ -91,13 +93,11 @@ class WorkTime(tk.Frame):
             time.sleep(snooze)
         self.clock()
         
+        log_screen.insert("end", f"Date: [{datetime.date.today()}]\n")
+        
     def clock(self): 
         self.current_time.set(datetime.datetime.now().strftime("%H:%M:%S"))
         self.after(1000, self.clock)
-        
-    def update_time(self):
-        self.time_elapsed.set("Elapsed time: " + time.strftime("%H:%M:%S"))
-        self.after(1000, self.update_time)
     
     # When savefile profile is changed
     def profile_on_change(self):
@@ -105,7 +105,10 @@ class WorkTime(tk.Frame):
         if self.profile.get().strip():
             self.profile_string.set(f"Saved to file \"{self.profile.get()}.txt\"")
         else:
-            self.profile_string.set("Saved to file \"no_name.txt\"")
+            self.profile_string.set("Saved to file \"unnamed.txt\"")
+        
+        # TODO
+        # - Add date to filename
 
     # When time counter is paused
     def pause_time(self):
@@ -118,12 +121,24 @@ class WorkTime(tk.Frame):
             # Change button text to 'Reset'
         # If pause True and start False, reset the timer
             # Change button to 'Pause'
+        
+# Stop counting time
+def stop_time():
+    global is_running
+    is_running = False
+    
+# Update time
+def update_time(elapsed):
+    if is_running:
+        elapsed_time = time.time() - t_start
+        elapsed.set("Elapsed time: " + str(elapsed_time))
+        elapsed.after(50, update_time)
 
 # Save log into a file
 def save_to_file(name, text):
     filename = f"{name.get()}.txt"
     file = open(filename, "w")
-    print(text.get("1.0", tk.END))
+    print(f"Saved to file {filename}: \n" + text.get("1.0", tk.END))
     file.write(text.get("1.0", tk.END))
     file.close()
         
@@ -136,18 +151,25 @@ def save_to_file(name, text):
 
 # When current task is changed
 def task_on_change(destination, task, t):
-    destination.insert('end', f'New task {task.get()} at [{t}]\n')
+    destination.insert('end', f'New task {task.get()} at [{t.get()}]\n')
         
 # When time counter is started
 def start_time(destination, task, t, elapsed):
-    destination.insert("end", f"Date: [{datetime.date.today()}]\n" +
-                       f"[{t}]: Task {task.get()} started\n")
-    # WorkTime.update_time(elapsed.get())
+    destination.insert("end", f"[{t.get()}]: Task {task.get()} started\n")
+    
+    global is_running
+    global t_start
+    if not is_running: 
+        is_running = True
+        t_start = time.time()
+        update_time(elapsed)
     
     # TODO
     # - If pause True and start False, start the timer
     # - Disable start/continue button when time is not paused
     # - Enable start/continue button when time is paused
+        
+is_running = False
 
 class WorkTimeApplication(tk.Tk): 
     """Work Time Counter Main Application"""

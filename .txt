@@ -1,4 +1,2 @@
-New task yyyyyy at [Current time: 21:02:30]
-Date: [2023-12-08]
-[Current time: 21:02:30]: Task yyyyyy started
+Date: [2023-12-09]
 
