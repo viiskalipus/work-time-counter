@@ -55,8 +55,7 @@ class WorkTime(tk.Frame):
                                           command=partial(start_time, 
                                                           log_screen, 
                                                           self.task_name, 
-                                                          self.current_time,
-                                                          self.time_elapsed))
+                                                          self.current_time))
         counter_pause_button = ttk.Button(self, text="Pause", command=self.pause_time)
         task_ok_button = ttk.Button(self, text="OK", 
                                     command=partial(task_on_change,
@@ -92,6 +91,7 @@ class WorkTime(tk.Frame):
         if snooze > 0:
             time.sleep(snooze)
         self.clock()
+        update_time()
         
         log_screen.insert("end", f"Date: [{datetime.date.today()}]\n")
         
@@ -128,11 +128,11 @@ def stop_time():
     is_running = False
     
 # Update time
-def update_time(elapsed):
+def update_time():
     if is_running:
         elapsed_time = time.time() - t_start
-        elapsed.set("Elapsed time: " + str(elapsed_time))
-        elapsed.after(50, update_time)
+        time_elapsed.set(text="Elapsed time: " + str(elapsed_time))
+        time_elapsed.after(50, update_time)
 
 # Save log into a file
 def save_to_file(name, text):
@@ -151,24 +151,28 @@ def save_to_file(name, text):
 
 # When current task is changed
 def task_on_change(destination, task, t):
+    # Update log
     destination.insert('end', f'New task {task.get()} at [{t.get()}]\n')
         
 # When time counter is started
-def start_time(destination, task, t, elapsed):
+def start_time(destination, task, t):
+    # Update log
     destination.insert("end", f"[{t.get()}]: Task {task.get()} started\n")
     
+    # Initialize time counting
     global is_running
     global t_start
     if not is_running: 
         is_running = True
         t_start = time.time()
-        update_time(elapsed)
+        update_time()
     
     # TODO
     # - If pause True and start False, start the timer
     # - Disable start/continue button when time is not paused
     # - Enable start/continue button when time is paused
         
+# Set timer running false by default
 is_running = False
 
 class WorkTimeApplication(tk.Tk): 
