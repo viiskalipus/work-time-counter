@@ -1,3 +1,6 @@
+# (c) Samuel Peiponen / AE5974
+# You may copy, edit and distribute freely
+
 """   
 Work Time Counter for keeping track on working time. 
 """
@@ -7,7 +10,6 @@ from tkinter import ttk
 import datetime
 import time
 import tkinter.scrolledtext as scrolledtext
-from functools import partial
 
 # WorkTime Frame
 class WorkTime(tk.Frame):
@@ -196,7 +198,6 @@ class WorkTime(tk.Frame):
     # When current task is changed
     def task_on_change(self):
         # Update log
-        "[{self.current_time.get()}]\[{self.elapsed_time.get()}]: RESET > Task {self.task_name.get()} reset\n"
         self.log_screen.insert("end", f"[{self.current_time.get()}]\[{self.elapsed_time.get()}]: TASK > New task [{self.task_name.get()}]\n")
         # Scroll to bottom after log is updated
         self.log_screen.yview(tk.END)
